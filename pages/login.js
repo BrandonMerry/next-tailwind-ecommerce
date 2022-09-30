@@ -15,7 +15,7 @@ export default function LoginScreen() {
 
   useEffect(() => {
     if (session?.user) {
-      router.push(redirect || '/');
+      router.push(redirect || '/shop');
     }
   }, [router, session, redirect]);
 
@@ -85,7 +85,9 @@ export default function LoginScreen() {
         </div>
         <div className="mb-4 ">
           Don&apos;t have an account? &nbsp;
-          <Link href={`/register?redirect=${redirect || '/'}`}>Register</Link>
+          <Link href={`/register?redirect=${redirect || '/shop'}`}>
+            Register
+          </Link>
         </div>
       </form>
     </Layout>
