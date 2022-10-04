@@ -1,34 +1,37 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Ecommerce Website
 
-## Getting Started
+A full stack web application that can - create, read, update, and delete items in a shopping cart. The items are stored on a Mongodb server and the cart items are linked to the user acctounts.
 
-First, run the development server:
+**Link to project:**
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+<!-- ![alt tag]() need to add a photo link here  -->
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## How It's Made:
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+**Tech used:** HTML, TailwindCSS, JavaScript, NextJs,
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+This project uses Tailwind css for styling and NextJS as the react framework. ** I will add more, but the mvp is still in progress\***
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+<!-- Here's where you can go to town on how you actually built this thing. Write as much as you can here, it's totally fine if it's not too much just make sure you write *something*. If you don't have too much experience on your resume working on the front end that's totally fine. This is where you can really show off your passion and make up for that ten fold. -->
 
-## Learn More
+## Optimizations
 
-To learn more about Next.js, take a look at the following resources:
+-Add more menu items to navbar and link them to the correct page (about, services, team, ect...)
+-move Dark mode tab to the other side of the menu items
+-Change landing page to the home page and move the home page (index.js) to be called a shopping page
+-Need to create a consistent brand identity (clothing & color scheme)- shopping cart uses clothing as an example, other pages use a construction site template
+-Change photos from decking company to tiny home furnature company
+-Create an about page
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Lessons Learned:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+<!-- No matter what your experience level, being an engineer means continuously learning. Every time you build something you always have those *whoa this is awesome* or *fuck yeah I did it!* moments. This is where you should share those moments! Recruiters and interviewers love to see that you're self-aware and passionate about growing. -->
 
-## Deploy on Vercel
+<!-- ## Examples:
+Take a look at these couple examples that I have in my own portfolio:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+**Palettable:** https://github.com/alecortega/palettable
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+**Twitter Battle:** https://github.com/alecortega/twitter-battle
+
+**Patch Panel:** https://github.com/alecortega/patch-panel -->

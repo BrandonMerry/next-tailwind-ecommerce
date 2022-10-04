@@ -1,37 +1,25 @@
+import { PayPalScriptProvider } from '@paypal/react-paypal-js';
+import { SnackbarProvider } from 'notistack';
+import { useEffect } from 'react';
 import '../styles/globals.css';
-import { SessionProvider, useSession } from 'next-auth/react';
 import { StoreProvider } from '../utils/Store';
-import { useRouter } from 'next/router';
 
-function MyApp({ Component, pageProps: { session, ...pageProps } }) {
+function MyApp({ Component, pageProps }) {
+  useEffect(() => {
+    const jssStyles = document.querySelector('#jss-server-side');
+    if (jssStyles) {
+      jssStyles.parentElement.removeChild(jssStyles);
+    }
+  }, []);
   return (
-    <SessionProvider session={session}>
+    <SnackbarProvider anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
       <StoreProvider>
-        {Component.auth ? (
-          <Auth>
-            <Component {...pageProps} />
-          </Auth>
-        ) : (
+        <PayPalScriptProvider deferLoading={true}>
           <Component {...pageProps} />
-        )}
+        </PayPalScriptProvider>
       </StoreProvider>
-    </SessionProvider>
+    </SnackbarProvider>
   );
-}
-
-function Auth({ children }) {
-  const router = useRouter();
-  const { status } = useSession({
-    required: true,
-    onUnauthenticated() {
-      router.push('/unauthorized?message=login required');
-    },
-  });
-  if (status === 'loading') {
-    return <div>Loading...</div>;
-  }
-
-  return children;
 }
 
 export default MyApp;

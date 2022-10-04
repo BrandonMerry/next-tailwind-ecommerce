@@ -1,65 +1,261 @@
-import { useSession } from 'next-auth/react';
+import React, { useContext } from 'react';
 import Head from 'next/head';
-import Link from 'next/link';
-import React, { useContext, useEffect, useState } from 'react';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import NextLink from 'next/link';
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Container,
+  Link,
+  createMuiTheme,
+  ThemeProvider,
+  CssBaseline,
+  Switch,
+  Badge,
+  Button,
+  Menu,
+  MenuItem,
+  Box,
+  IconButton,
+  Drawer,
+  List,
+  ListItem,
+  Divider,
+  ListItemText,
+} from '@material-ui/core';
+import MenuIcon from '@material-ui/icons/Menu';
+import CancelIcon from '@material-ui/icons/Cancel';
+import useStyles from '../utils/styles';
 import { Store } from '../utils/Store';
+import { getError } from '../utils/error';
+import Cookies from 'js-cookie';
+import { useState } from 'react';
+import { useRouter } from 'next/router';
+import { useSnackbar } from 'notistack';
+import axios from 'axios';
+import { useEffect } from 'react';
 
-export default function Layout({ title, children }) {
-  const { status, data: session } = useSession();
+export default function Layout({ title, description, children }) {
+  const router = useRouter();
+  const { state, dispatch } = useContext(Store);
+  const { darkMode, cart, userInfo } = state;
+  const theme = createMuiTheme({
+    typography: {
+      h1: {
+        fontSize: '1.6rem',
+        fontWeight: 400,
+        margin: '1rem 0',
+      },
+      h2: {
+        fontSize: '1.4rem',
+        fontWeight: 400,
+        margin: '1rem 0',
+      },
+    },
+    palette: {
+      type: darkMode ? 'dark' : 'light',
+      primary: {
+        main: '#f0c000',
+      },
+      secondary: {
+        main: '#208080',
+      },
+    },
+  });
+  const classes = useStyles();
 
-  const { state } = useContext(Store);
-  const { cart } = state;
-  const [cartItemsCount, setCartItemsCount] = useState(0);
+  const [sidbarVisible, setSidebarVisible] = useState(false);
+  const sidebarOpenHandler = () => {
+    setSidebarVisible(true);
+  };
+  const sidebarCloseHandler = () => {
+    setSidebarVisible(false);
+  };
+
+  const [categories, setCategories] = useState([]);
+  const { enqueueSnackbar } = useSnackbar();
+
+  const fetchCategories = async () => {
+    try {
+      const { data } = await axios.get(`/api/products/categories`);
+      setCategories(data);
+    } catch (err) {
+      enqueueSnackbar(getError(err), { variant: 'error' });
+    }
+  };
+
   useEffect(() => {
-    setCartItemsCount(cart.cartItems.reduce((a, c) => a + c.quantity, 0));
-  }, [cart.cartItems]);
+    fetchCategories();
+  }, []);
+
+  const darkModeChangeHandler = () => {
+    dispatch({ type: darkMode ? 'DARK_MODE_OFF' : 'DARK_MODE_ON' });
+    const newDarkMode = !darkMode;
+    Cookies.set('darkMode', newDarkMode ? 'ON' : 'OFF');
+  };
+  const [anchorEl, setAnchorEl] = useState(null);
+  const loginClickHandler = (e) => {
+    setAnchorEl(e.currentTarget);
+  };
+  const loginMenuCloseHandler = (e, redirect) => {
+    setAnchorEl(null);
+    if (redirect) {
+      router.push(redirect);
+    }
+  };
+  const logoutClickHandler = () => {
+    setAnchorEl(null);
+    dispatch({ type: 'USER_LOGOUT' });
+    Cookies.remove('userInfo');
+    Cookies.remove('cartItems');
+    Cookies.remove('shippinhAddress');
+    Cookies.remove('paymentMethod');
+    router.push('/');
+  };
   return (
-    <>
+    <div>
       <Head>
-        <title>{title ? title + ' - Ecommerce' : 'Ecommerce'}</title>
-        <meta name="description" content="Ecommerce Website" />
-        <link rel="icon" href="/favicon.ico" />
+        <title>{title ? `${title} - Ecommerce ` : 'Ecommerce'}</title>
+        {description && <meta name="description" content={description}></meta>}
       </Head>
-
-      <ToastContainer position="bottom-center" limit={1} />
-
-      <div className="flex min-h-screen flex-col justify-between ">
-        <header>
-          <nav className="flex h-12 items-center px-4 justify-between shadow-md">
-            <Link href="/">
-              <a className="text-lg font-bold">E-commerce Website</a>
-            </Link>
-            <div>
-              <Link href="/cart">
-                <a className="p-2">
-                  Cart
-                  {cartItemsCount > 0 && (
-                    <span className="ml-1 rounded-full bg-gray-200 px-2 py-1 text-xs font-bold text-black ">
-                      {cartItemsCount}
-                    </span>
-                  )}
-                </a>
-              </Link>
-
-              {status === 'loading' ? (
-                'Loading'
-              ) : session?.user ? (
-                session.user.name
-              ) : (
-                <Link href="/login">
-                  <a className="p-2">Login</a>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <AppBar position="static" className={classes.navbar}>
+          <Toolbar className={classes.toolbar}>
+            <Box display="flex" alignItems="center">
+              <IconButton
+                edge="start"
+                aria-label="open drawer"
+                onClick={sidebarOpenHandler}
+                className={classes.menuButton}
+              >
+                <MenuIcon className={classes.navbarButton} />
+              </IconButton>
+              <NextLink href="/" passHref>
+                <Link>
+                  <Typography className={classes.brand}>
+                    Ecommerce Website
+                  </Typography>
                 </Link>
+              </NextLink>
+            </Box>
+            <Drawer
+              anchor="left"
+              open={sidbarVisible}
+              onClose={sidebarCloseHandler}
+            >
+              <List>
+                <ListItem>
+                  <Box
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="space-between"
+                  >
+                    <Typography>Shopping by category</Typography>
+                    <IconButton
+                      aria-label="close"
+                      onClick={sidebarCloseHandler}
+                    >
+                      <CancelIcon />
+                    </IconButton>
+                  </Box>
+                </ListItem>
+                <Divider light />
+                {categories.map((category) => (
+                  <NextLink
+                    key={category}
+                    href={`/search?category=${category}`}
+                    passHref
+                  >
+                    <ListItem
+                      button
+                      component="a"
+                      onClick={sidebarCloseHandler}
+                    >
+                      <ListItemText primary={category}></ListItemText>
+                    </ListItem>
+                  </NextLink>
+                ))}
+              </List>
+            </Drawer>
+
+            <div>
+              <Switch
+                checked={darkMode}
+                onChange={darkModeChangeHandler}
+              ></Switch>
+              <NextLink href="/cart" passHref>
+                <Link>
+                  <Typography component="span">
+                    {cart.cartItems.length > 0 ? (
+                      <Badge
+                        color="secondary"
+                        badgeContent={cart.cartItems.length}
+                      >
+                        Cart
+                      </Badge>
+                    ) : (
+                      'Cart'
+                    )}
+                  </Typography>
+                </Link>
+              </NextLink>
+              {userInfo ? (
+                <>
+                  <Button
+                    aria-controls="simple-menu"
+                    aria-haspopup="true"
+                    onClick={loginClickHandler}
+                    className={classes.navbarButton}
+                  >
+                    {userInfo.name}
+                  </Button>
+                  <Menu
+                    id="simple-menu"
+                    anchorEl={anchorEl}
+                    keepMounted
+                    open={Boolean(anchorEl)}
+                    onClose={loginMenuCloseHandler}
+                  >
+                    <MenuItem
+                      onClick={(e) => loginMenuCloseHandler(e, '/profile')}
+                    >
+                      Profile
+                    </MenuItem>
+                    <MenuItem
+                      onClick={(e) =>
+                        loginMenuCloseHandler(e, '/order-history')
+                      }
+                    >
+                      Order Hisotry
+                    </MenuItem>
+                    {userInfo.isAdmin && (
+                      <MenuItem
+                        onClick={(e) =>
+                          loginMenuCloseHandler(e, '/admin/dashboard')
+                        }
+                      >
+                        Admin Dashboard
+                      </MenuItem>
+                    )}
+                    <MenuItem onClick={logoutClickHandler}>Logout</MenuItem>
+                  </Menu>
+                </>
+              ) : (
+                <NextLink href="/login" passHref>
+                  <Link>
+                    <Typography component="span">Login</Typography>
+                  </Link>
+                </NextLink>
               )}
             </div>
-          </nav>
-        </header>
-        <main className="container m-auto mt-4 px-4">{children}</main>
-        <footer className="flex h-10 justify-center items-center shadow-inner">
-          <p>Copyright © 2022 Ecommerce</p>
+          </Toolbar>
+        </AppBar>
+        <Container className={classes.main}>{children}</Container>
+        <footer className={classes.footer}>
+          <Typography>All rights reserved. Next Amazona.</Typography>
         </footer>
-      </div>
-    </>
+      </ThemeProvider>
+    </div>
   );
 }

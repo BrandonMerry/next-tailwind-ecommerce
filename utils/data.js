@@ -1,6 +1,4 @@
-// this file is a data object for product arrays
 import bcrypt from 'bcryptjs';
-
 const data = {
   users: [
     {
@@ -16,17 +14,18 @@ const data = {
       isAdmin: false,
     },
   ],
-
   products: [
     {
       name: 'Free Shirt',
       slug: 'free-shirt',
       category: 'Shirts',
       image: '/images/shirt1.jpg',
+      isFeatured: true,
+      featuredImage: '/images/banner1.jpg',
       price: 70,
       brand: 'Nike',
       rating: 4.5,
-      numReviews: 8,
+      numReviews: 10,
       countInStock: 20,
       description: 'A popular shirt',
     },
@@ -35,9 +34,11 @@ const data = {
       slug: 'fit-shirt',
       category: 'Shirts',
       image: '/images/shirt2.jpg',
+      isFeatured: true,
+      featuredImage: '/images/banner2.jpg',
       price: 80,
       brand: 'Adidas',
-      rating: 3.2,
+      rating: 4.2,
       numReviews: 10,
       countInStock: 20,
       description: 'A popular shirt',
@@ -50,7 +51,7 @@ const data = {
       price: 90,
       brand: 'Raymond',
       rating: 4.5,
-      numReviews: 3,
+      numReviews: 10,
       countInStock: 20,
       description: 'A popular shirt',
     },
@@ -61,8 +62,8 @@ const data = {
       image: '/images/pants1.jpg',
       price: 90,
       brand: 'Oliver',
-      rating: 2.9,
-      numReviews: 13,
+      rating: 4.5,
+      numReviews: 10,
       countInStock: 20,
       description: 'Smart looking pants',
     },
@@ -73,8 +74,8 @@ const data = {
       image: '/images/pants2.jpg',
       price: 95,
       brand: 'Zara',
-      rating: 3.5,
-      numReviews: 7,
+      rating: 4.5,
+      numReviews: 10,
       countInStock: 20,
       description: 'A popular pants',
     },
@@ -85,12 +86,11 @@ const data = {
       image: '/images/pants3.jpg',
       price: 75,
       brand: 'Casely',
-      rating: 2.4,
-      numReviews: 14,
+      rating: 4.5,
+      numReviews: 10,
       countInStock: 20,
       description: 'A popular pants',
     },
   ],
 };
-
 export default data;
